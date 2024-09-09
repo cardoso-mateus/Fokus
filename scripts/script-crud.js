@@ -2,8 +2,13 @@ const botaoAdicionarTarefa = seletor('.app__button--add-task');
 const formulario = seletor('.app__form-add-task');
 const textArea = seletor('.app__form-textarea');
 const ulTarefas = seletor('.app__section-task-list');
+const botaoCancelar = seletor('.app__form-footer__button--cancel');
 
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+
+function atualizarTarefas() {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+}
 
 function criarElementoTarefa(tarefa) {
     const li = document.createElement('li');
@@ -21,15 +26,23 @@ function criarElementoTarefa(tarefa) {
     paragrafo.classList.add('app__section-task-list-item-description');
     paragrafo.textContent = tarefa.descricao;
 
-    const botao = document.createElement('button');
-    botao.classList.add('app_button-edit');
+    const botaoEditar = document.createElement('button');
+    botaoEditar.classList.add('app_button-edit');
+    botaoEditar.onclick = () => {
+        const novaDescricao = prompt("Editar tarefa!");
+        if (novaDescricao) {
+            paragrafo.textContent = novaDescricao;
+            tarefa.descricao = novaDescricao;
+            atualizarTarefas();
+        }
+    }
     const imagemBotao = document.createElement('img');
     imagemBotao.setAttribute('src','/imagens/edit.png');
-    botao.append(imagemBotao);
+    botaoEditar.append(imagemBotao);
 
     li.append(svg);
     li.append(paragrafo);
-    li.append(botao);
+    li.append(botaoEditar);
 
     return li;
 }
@@ -51,12 +64,17 @@ formulario.addEventListener('submit', (e) => {
     tarefas.push(tarefa);
     const elementoTarefa = criarElementoTarefa(tarefa);
     ulTarefas.append(elementoTarefa);
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    atualizarTarefas();
     textArea.value = '';
     formulario.classList.toggle('hidden');
 });
 
-
+botaoCancelar.addEventListener('click', () => {
+    if (textArea.value) {
+        textArea.value = '';
+    }
+    formulario.classList.toggle('hidden');
+})
 
 function seletor (texto) {
     return document.querySelector(texto);
