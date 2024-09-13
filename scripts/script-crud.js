@@ -9,6 +9,10 @@ const formulario = seletor('.app__form-add-task');
 const textArea = seletor('.app__form-textarea');
 const ulTarefas = seletor('.app__section-task-list');
 const botaoCancelar = seletor('.app__form-footer__button--cancel');
+const tarefaSelecionadaDescricao = seletor('.app__section-active-task-description');
+
+let tarefaSelecionada = null;
+let liTarefaSelecionada = null;
 
 /*
 // array que armazena as tarefas, ela carrega as tarefas do localStorage ou inicializa como um array vazio
@@ -44,6 +48,15 @@ function atualizarTarefas() {
 // botaoEditar.append() adiciona o elemento <img> ao elemento <button>
 // li.append() adiciona o elemento <svg>, <p> e <button> ao elemento <li>
 // o elemento <li> é retornado para ser adicionado ao DOM dentro do elemento <ul> armazenado em ulTarefas
+// li.onclick é um evento que é disparado quando o elemento <li> é clicado
+// document.querySelectorAll() retorna uma lista de todos os elementos que possuem a classe passada como argumento
+// no laço forEach, cada elemento da lista é selecionado e a classe passada como argumento de quarySelectorAll() é removida
+// em if, se o argumento de criarElementoTarefa() é igual a variavel tarefaSelecionada, tarefaSelecionada e liTarefaSelecionada recebem null e tarefaSelecionadaDescricao é limpo
+// um early return é usado para sair da função se a tarefa selecionada é a mesma que a tarefa passada como argumento
+// tarefaSelecionadaDescricao.textContent recebe o valor de tarefa.descricao
+// li.classList.add() adiciona a classe do argumento ao elemento <li>
+// tarefaSelecionada recebe o valor do argumento de criarElementoTarefa()
+// liTarefaSelecionada recebe o elemento <li>
 */
 function criarElementoTarefa(tarefa) {
     const li = document.createElement('li');
@@ -78,6 +91,23 @@ function criarElementoTarefa(tarefa) {
     li.append(svg);
     li.append(paragrafo);
     li.append(botaoEditar);
+
+    li.onclick = () => {
+        document.querySelectorAll('.app__section-task-list-item-active')
+        .forEach(elemento => {
+            elemento.classList.remove('app__section-task-list-item-active');
+        });
+        if (tarefaSelecionada == tarefa) {
+            tarefaSelecionadaDescricao.textContent = '';
+            tarefaSelecionada = null;
+            liTarefaSelecionada = null;
+            return;
+        }
+        tarefaSelecionadaDescricao.textContent = tarefa.descricao;
+        li.classList.add('app__section-task-list-item-active');
+        tarefaSelecionada = tarefa;
+        liTarefaSelecionada = li;
+    }
 
     return li;
 }
@@ -142,3 +172,20 @@ botaoCancelar.addEventListener('click', () => {
 function seletor (texto) {
     return document.querySelector(texto);
 }
+
+/*
+// document.addEventListener() escuta um evento do documento, no caso o evento FocoFinalizado, de acordo com o argumento
+// FocoFinalizado é um evento personalizado que é disparado quando o tempo de foco termina
+// em if, se tarefaSelecionada e liTarefaSelecionada são iguais a true
+// liTarefaSelecionada.classList.remove() remove a classe passada como argumento do elemento <li>
+// liTarefaSelecionada.classList.add() adiciona a classe passada como argumento do elemento <li>
+// liTarefaSelecionada.querySelector() busca dentro do elemento <li> o elemento referente ao argumento
+// setAttribute() define o atributo do elemento, passado como primeiro argumento, e o valor do atributo, passado como segundo argumento
+*/
+document.addEventListener('FocoFinalizado', () => {
+    if (tarefaSelecionada && liTarefaSelecionada) {
+        liTarefaSelecionada.classList.remove('app__section-task-list-item-active');
+        liTarefaSelecionada.classList.add('app__section-task-list-item-complete');
+        liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'true');
+    }
+});
