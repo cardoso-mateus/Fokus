@@ -18,7 +18,8 @@ const audioPlay = new Audio('./sons/play.wav');
 const audioPause = new Audio('./sons/pause.mp3');
 const audioBeep = new Audio('./sons/beep.mp3');
 
-const tempoDeFoco = 45*60;
+const tempoDeFoco = 5;
+// const tempoDeFoco = 45*60;
 const tempoDescansoCurto = 5*60;
 const tempoDescansoLongo = 15*60;
 
@@ -27,6 +28,11 @@ const contagemRegressiva = () => {
     if (tempoCorrido <= 0) {
         audioBeep.play();
         alert('Tempo finalizado!');
+        const focoAtivo = html.getAttribute('data-contexto') === 'foco';
+        if (focoAtivo) {
+            const evento = new CustomEvent('FocoFinalizado');
+            document.dispatchEvent(evento);
+        }
         zerar();
         return
     }
