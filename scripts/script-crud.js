@@ -6,6 +6,7 @@ const botaoCancelar = seletor('.app__form-footer__button--cancel');
 const tarefaSelecionadaDescricao = seletor('.app__section-active-task-description');
 
 const botaoLimparConcluidas = seletor('#btn-remover-concluidas');
+const botaoLimparTodas = seletor('#btn-remover-todas');
 
 let tarefaSelecionada = null;
 let liTarefaSelecionada = null;
@@ -113,13 +114,17 @@ document.addEventListener('FocoFinalizado', () => {
     }
 });
 
-botaoLimparConcluidas.onclick = () => {
-    document.querySelectorAll('.app__section-task-list-item-complete').forEach(elemento => {
+const removerTarefas = (somenteCompletas) => {
+    let seletorDeClasse = somenteCompletas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item';
+    document.querySelectorAll(seletorDeClasse).forEach(elemento => {
         elemento.remove();
     });
-    tarefas = tarefas.filter(tarefa => !tarefa.completa);
+    tarefas = somenteCompletas ? tarefas.filter(tarefa => !tarefa.completa) : [];
     atualizarTarefas();
 }
+
+botaoLimparConcluidas.onclick = () => removerTarefas(true);
+botaoLimparTodas.onclick = () => removerTarefas(false);
 
 function seletor(texto) {
     return document.querySelector(texto);
