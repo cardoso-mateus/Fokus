@@ -71,17 +71,18 @@ function mudaContexto(contexto) {
     switch (contexto) {
         case "foco":
             titulo.innerHTML =
-                `Hora de entrar na <strong class="app__title-strong">MATRIX</strong>.`
+                `Otimize sua produtividade,<br>
+                <strong class="app__title-strong">mergulhe no que importa.</strong>`
             break;
 
         case "descanso-curto":
             titulo.innerHTML =
-                `O telefone está <strong class="app__title-strong">tocando</strong>!`
+                `Que tal dar uma respirada? <strong class="app__title-strong">Faça uma pausa curta!</strong>`
             break;
 
         case "descanso-longo":
             titulo.innerHTML =
-                `Já parou para admira-la, sua <strong class="app__title-strong">beleza</strong>?`
+                `Hora de voltar à superfície.<strong class="app__title-strong"> Faça uma pausa longa.</strong>`
             break;
 
         default:
